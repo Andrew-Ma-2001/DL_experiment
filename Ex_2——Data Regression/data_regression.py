@@ -50,3 +50,5 @@ for i in range(epochs):
 path = 'Ex2_model.pth'
 torch.save(model.state_dict(), path)
 out = model(x)
+
+# todo matplotlib 的动态制图
