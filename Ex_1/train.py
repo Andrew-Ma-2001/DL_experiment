@@ -8,14 +8,6 @@ from tqdm import tqdm
 import time
 from sklearn.metrics import accuracy_score
 
-# Using GPU to calculate
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-n = 500
-x = torch.Tensor([[0, 0], [0, 1], [1, 0], [1, 1]])
-x = x.to(device)
-y = torch.Tensor([[1,0] if k[0]+k[1]==1 else [0, 1] for k in x])
-y = y.to(device)
 
 class XOR_net(nn.Module):
     def __init__(self):
@@ -33,28 +25,37 @@ class XOR_net(nn.Module):
         return x4
 
 
-model = XOR_net()
-model = model.to(device)
-loss_fun = nn.MSELoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
+if __name__ == '__main__':
+    # Using GPU to calculate
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-epochs = 5000
+    x = torch.Tensor([[0, 0], [0, 1], [1, 0], [1, 1]])
+    x = x.to(device)
+    y = torch.Tensor([[1, 0] if k[0] + k[1] == 1 else [0, 1] for k in x])
+    y = y.to(device)
 
-for i in range(epochs):
-    y_pre = model.forward(x)
+    model = XOR_net()
+    model = model.to(device)
+    loss_fun = nn.MSELoss()
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
 
-    loss = loss_fun(y_pre, y)
-    optimizer.zero_grad()
-    loss.backward()
-    optimizer.step()
+    epochs = 5000
 
-    if i % 1000 == 0:
-        print(f'Epochs : {i}')
-        print(f'Loss : {loss}')
+    for i in range(epochs):
+        y_pre = model.forward(x)
 
-path = 'ex1_model.pth'
-torch.save(model, path)
-out = model(x)
+        loss = loss_fun(y_pre, y)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
 
-print(out)
-print(y)
+        if i % 1000 == 0:
+            print(f'Epochs : {i}')
+            print(f'Loss : {loss}')
+
+    path = 'Ex1_model.pth'
+    torch.save(model.state_dict(), path)
+    out = model(x)
+
+    print(out)
+    print(y)
