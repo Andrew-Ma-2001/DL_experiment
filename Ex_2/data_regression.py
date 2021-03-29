@@ -23,12 +23,10 @@ x = torch.unsqueeze(torch.linspace(-np.pi, np.pi, 100), dim=1)
 y = torch.sin(x) + 0.5 * torch.rand(x.size())
 
 # Create Image
-plot_y_pre = []
 plot_x = torch.squeeze(x.to('cpu')).numpy()
 plot_y = torch.squeeze(y.to('cpu')).numpy()
 
-plt.plot(plot_x, plot_y)
-plt.show()
+
 # Using GPU to calculate
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 x = x.to(device)
@@ -54,6 +52,7 @@ for i in range(epochs):
     if i % 250 == 0:
         print(f'Epochs : {i}')
         print(f'Loss : {loss}')
+        plot_y_pre = (torch.squeeze(y_pre.to('cpu'))).detach().numpy()
         plt.ion()  # 开启一个画图的窗口
 
         plt.clf()
