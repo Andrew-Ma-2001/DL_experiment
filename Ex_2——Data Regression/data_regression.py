@@ -22,6 +22,13 @@ class DR_net(nn.Module):
 x = torch.unsqueeze(torch.linspace(-np.pi, np.pi, 100), dim=1)
 y = torch.sin(x) + 0.5 * torch.rand(x.size())
 
+# Create Image
+plot_y_pre = []
+plot_x = torch.squeeze(x.to('cpu')).numpy()
+plot_y = torch.squeeze(y.to('cpu')).numpy()
+
+plt.plot(plot_x, plot_y)
+plt.show()
 # Using GPU to calculate
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 x = x.to(device)
@@ -33,6 +40,7 @@ model = model.to(device)
 loss_fun = nn.MSELoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
 
+
 # Start training
 epochs = 2000
 for i in range(epochs):
@@ -43,9 +51,16 @@ for i in range(epochs):
     loss.backward()
     optimizer.step()
 
-    if i % 500 == 0:
+    if i % 250 == 0:
         print(f'Epochs : {i}')
         print(f'Loss : {loss}')
+        plt.ion()  # 开启一个画图的窗口
+
+        plt.clf()
+        plt.plot(plot_x, plot_y)
+        # plt.plot(plot_x, plot_y_pre)
+        plt.pause(0.1)
+        plt.ioff()
 
 path = 'Ex2_model.pth'
 torch.save(model.state_dict(), path)
