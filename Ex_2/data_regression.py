@@ -21,10 +21,10 @@ class DR_net(nn.Module):
 # Create Dataset
 x = torch.unsqueeze(torch.linspace(-np.pi, np.pi, 100), dim=1)
 y = torch.sin(x) + 0.5 * torch.rand(x.size())
-
+y_train = torch.sin(x)
 # Create Image
 plot_x = torch.squeeze(x.to('cpu')).numpy()
-plot_y = torch.squeeze(y.to('cpu')).numpy()
+plot_y_train = torch.squeeze(y.to('cpu')).numpy()
 
 
 # Using GPU to calculate
@@ -55,8 +55,10 @@ for i in range(epochs):
         plot_y_pre = (torch.squeeze(y_pre.to('cpu'))).detach().numpy()
         plt.ion()  # 开启一个画图的窗口
 
-        plt.clf()
-        plt.plot(plot_x, plot_y)
+        plt.clf()  # 清空之前的图
+
+        plt.scatter(plot_x, plot_y_train)
+        plt.plot(plot_x, plot_y_pre)
         # plt.plot(plot_x, plot_y_pre)
         plt.pause(0.1)
         plt.ioff()
@@ -66,3 +68,4 @@ torch.save(model.state_dict(), path)
 out = model(x)
 
 # todo matplotlib 的动态制图
+# 这里面有一个是不变的，就是一开始制作的x,y 应该是以曲线展示
