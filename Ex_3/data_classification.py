@@ -32,6 +32,8 @@ y1 = torch.ones(100)
 y = torch.cat((y0, y1)).type(dtype=torch.LongTensor)
 y_print = y
 y_label = []
+
+
 # Using GPU to calculate
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 x = x.to(device)
@@ -40,7 +42,7 @@ model = DC_net()
 model = model.to(device)
 
 # Setting Optimizer & Loss function
-optimizer = torch.optim.SGD(model.parameters(), lr=0.03)
+optimizer = torch.optim.SGD(model.parameters(), lr=0.0015)
 loss_fun = nn.CrossEntropyLoss()
 epoches = 100
 # Training
@@ -51,13 +53,17 @@ for i in range(epoches):
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
-    if i == epoches - 1:
+    if i % 5 == 0:
+        print(f'Epochs : {i}')
+        print(f'Loss : {loss}')
         y_label = y_pre.to('cpu').detach()
-
-y_prediction = (torch.max(y_label, 1)[1]).numpy()
-target_y = y_print.numpy()
-plt.scatter(x_print.numpy()[:, 0], x_print.numpy()[:, 1], c=y_prediction, s=100, cmap='RdYlGn')
-acc = sum(y_prediction == target_y) / 200
-plt.text(1.5, -4, f'Accuracy is {acc}', fontdict={'size': 20, 'color': 'red'})
-
+        y_prediction = (torch.max(y_label, 1)[1]).numpy()
+        target_y = y_print.numpy()
+        plt.ion()
+        plt.clf()
+        plt.scatter(x_print.numpy()[:, 0], x_print.numpy()[:, 1], c=y_prediction, s=100, cmap='RdYlGn')
+        acc = sum(y_prediction == target_y) / 200
+        plt.text(1.5, -4, f'Accuracy is {acc}', fontdict={'size': 20, 'color': 'red'})
+        plt.pause(0.5)
+        plt.ioff()
 print('1')
