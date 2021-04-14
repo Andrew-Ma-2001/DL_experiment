@@ -35,7 +35,7 @@ model = model.to(device)
 
 # Setting loss & optimizer
 loss_fun = nn.MSELoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
+optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
 
 # Start training
 epochs = 2000
@@ -54,8 +54,8 @@ for i in range(epochs):
         plt.ion()
         plt.clf()
         plt.scatter(plot_x, plot_y_train)
-        plt.plot(plot_x, plot_y_pre)
-        plt.pause(0.1)
+        plt.plot(plot_x, plot_y_pre,'r',linewidth=3)
+        plt.pause(0.5)
         plt.ioff()
 
 path = 'Ex2_model.pth'
