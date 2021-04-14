@@ -42,7 +42,7 @@ model = DC_net()
 model = model.to(device)
 
 # Setting Optimizer & Loss function
-optimizer = torch.optim.SGD(model.parameters(), lr=0.0015)
+optimizer = torch.optim.SGD(model.parameters(), lr=0.03)
 loss_fun = nn.CrossEntropyLoss()
 epoches = 100
 # Training
