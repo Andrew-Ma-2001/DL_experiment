@@ -4,9 +4,6 @@ Using Pytorch to Predict XOR calculation
 """
 import torch
 import torch.nn as nn
-from tqdm import tqdm
-import time
-from sklearn.metrics import accuracy_score
 
 
 class XOR_net(nn.Module):

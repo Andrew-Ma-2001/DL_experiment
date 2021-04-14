@@ -66,4 +66,7 @@ for i in range(epoches):
         plt.text(1.5, -4, f'Accuracy is {acc}', fontdict={'size': 20, 'color': 'red'})
         plt.pause(0.5)
         plt.ioff()
-print('1')
+
+path = 'Ex3_model.pth'
+torch.save(model.state_dict(), path)
+out = model(x)
