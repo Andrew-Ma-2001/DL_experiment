@@ -12,9 +12,10 @@ model = XOR_net()
 model.load_state_dict(torch.load(path))
 model.to(device)
 model.eval()
-out = model(x)
 
-if out[0][0] + out[0][1] > 1:
+
+out = model(x)
+if out[0][0]  == 1:
     out = 1
 else:
     out = 0
