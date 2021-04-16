@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
-from Ex_2.data_regression import DR_net
+from Ex_2.train import DR_net
 
 
 # Using GPU to calculate
