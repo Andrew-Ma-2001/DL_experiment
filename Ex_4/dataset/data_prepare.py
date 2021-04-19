@@ -56,21 +56,31 @@ def preprocess_img(list):
     # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     return img
 
-mkdir('cat/cat')
-mkdir('dog/dog')
-for i in range(100):
+mkdir('train_set')
+mkdir('test_set')
+for i in range(70):  #70-100
     cat_name = 'cat.' + str(i) + '.jpg'
     cat_path = 'cat/' + cat_name
     dog_name = 'dog.' + str(i) + '.jpg'
     dog_path = 'dog/' + dog_name
     try:
         if cat_name in cat_list and dog_name in dog_list:
-            cv2.imwrite('cat/cat/' + cat_name, preprocess_img(cat_path))
-            cv2.imwrite('dog/dog/' + dog_name, preprocess_img(dog_path))
+            cv2.imwrite('train_set/' + cat_name, preprocess_img(cat_path))
+            cv2.imwrite('train_set/' + dog_name, preprocess_img(dog_path))
     except:
         print(f'Check the name of your dataset')
 
-
+for i in range(70, 100):  #70-100
+    cat_name = 'cat.' + str(i) + '.jpg'
+    cat_path = 'cat/' + cat_name
+    dog_name = 'dog.' + str(i) + '.jpg'
+    dog_path = 'dog/' + dog_name
+    try:
+        if cat_name in cat_list and dog_name in dog_list:
+            cv2.imwrite('test_set/' + cat_name, preprocess_img(cat_path))
+            cv2.imwrite('test_set/' + dog_name, preprocess_img(dog_path))
+    except:
+        print(f'Check the name of your dataset')
 # Creating Dataset
 # 这里就 140x256x256x3
 # train_set = np.zeros(train_img_num * img_x * img_y)
