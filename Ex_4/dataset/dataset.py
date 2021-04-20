@@ -4,6 +4,8 @@ from torch.utils.data import Dataset
 from torchvision.io import read_image
 import os
 import matplotlib.pyplot as plt
+import numpy as np
+
 
 def file_name(file_dir):
     list = []
@@ -52,28 +54,31 @@ class Dogcat_Dataset(Dataset):
 
 
 if __name__ == '__main__':
+    labels_map = { 0: 'cat', 1: 'dog',}
+
     training_data = Dogcat_Dataset(train_dir='train_set', test_dir='test_set')
     test_data = Dogcat_Dataset(train_dir='train_set', test_dir='test_set', train=False)
 
 
-    train_dataloader = DataLoader(training_data, batch_size=16, shuffle=True)
-    test_dataloader = DataLoader(test_data, batch_size=16, shuffle=True)
+    train_dataloader = DataLoader(training_data, batch_size=10, shuffle=True)
+    test_dataloader = DataLoader(test_data, batch_size=10, shuffle=True)
 
-
+    # Testing
     sample_idx = torch.randint(len(training_data), size=(1,)).item()
-    img, label = training_data[sample_idx]
+    img = training_data[sample_idx]['image']
+    label = training_data[sample_idx]['label']
+    # numpy image: H x W x C
+    # torch image: C x H x W
+    # np.transpose( xxx,  (2, 0, 1))   # 将 H x W x C 转化为 C x H x W
+    img = np.transpose((img.numpy()), (1, 2, 0))
+    plt.imshow(img)
+    plt.title(label)
+    plt.show(0.5)
+
+    train_features, train_labels = next(iter(train_dataloader)['image']), next(iter(train_dataloader)['label'])
 
 
 
 
 
 
-    # Display image and label.
-    # train_features, train_labels = next(iter(train_dataloader))
-    # print(f"Feature batch shape: {train_features.size()}")
-    # print(f"Labels batch shape: {train_labels.size()}")
-    # img = train_features[0].squeeze()
-    # label = train_labels[0]
-    # plt.imshow(img, cmap="gray")
-    # plt.show()
-    # print(f"Label: {label}")
