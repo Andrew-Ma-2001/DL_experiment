@@ -28,13 +28,13 @@ class Dogcat_Dataset(Dataset):
             path = file_name(self.train_dir)[item]
             image = read_image(path)
             label = self.find_label(path)
-            sample = {"image": image, "label": label}
-            return sample
+
+            return image,label
         else:
             path = file_name(self.test_dir)[item]
             image = read_image(path)
             label = self.find_label(path)
-            sample = {"image": image, "label": label}
+            sample = [image, label]
             return sample
 
 
@@ -47,9 +47,9 @@ class Dogcat_Dataset(Dataset):
     # Here we consider cat as 0 dog as 1
     def find_label(self, name):
         if name.count('dog') != 0:
-            return 1
+            return torch.tensor([1,0])
         if name.count('cat') != 0:
-            return 0
+            return torch.tensor([0,1])
 
 
 
@@ -65,17 +65,18 @@ if __name__ == '__main__':
 
     # Testing
     sample_idx = torch.randint(len(training_data), size=(1,)).item()
-    img = training_data[sample_idx]['image']
-    label = training_data[sample_idx]['label']
+    img, label = training_data[sample_idx]
+
     # numpy image: H x W x C
     # torch image: C x H x W
     # np.transpose( xxx,  (2, 0, 1))   # 将 H x W x C 转化为 C x H x W
     img = np.transpose((img.numpy()), (1, 2, 0))
     plt.imshow(img)
     plt.title(label)
-    plt.show(0.5)
+    plt.show()
 
-    train_features, train_labels = next(iter(train_dataloader)['image']), next(iter(train_dataloader)['label'])
+    train_features, train_labels = next(iter(train_dataloader))
+    print(train_features.type())
 
 
 

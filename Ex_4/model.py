@@ -4,8 +4,12 @@ Using Dogcat Dataset to Train Classification Pytorch Network
 """
 import torch.nn as nn
 import torch
-from Ex_4.dataset.dataset import Dogcat_Dataset
 from torch.utils.data import DataLoader
+from torch.utils.data import Dataset
+from Ex_4.dataset.dataset import Dogcat_Dataset
+from torchvision.io import read_image
+
+
 
 class DogCat_Net(nn.Module):
     def __init__(self):
@@ -52,8 +56,33 @@ class DogCat_Net(nn.Module):
 
 if __name__ == '__main__':
     model = DogCat_Net()
-    loss_fun = nn.MSELoss()
+    loss_fn = nn.MSELoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
-    image = torch.randn(1,3,256,256)
-    preds = model.forward(image)
-    print(preds)
+    # image = torch.randn(1,3,256,256)
+    # y = torch.tensor([0,1])
+    # preds = model.forward(image)
+    #
+    # loss = loss_fn(preds, y)
+    # print(preds)
+
+    training_data = Dogcat_Dataset(train_dir='dataset/train_set', test_dir='dataset/test_set')
+    test_data = Dogcat_Dataset(train_dir='dataset/train_set', test_dir='dataset/test_set', train=False)
+
+    train_dataloader = DataLoader(training_data, batch_size=1, shuffle=True)
+    test_dataloader = DataLoader(test_data, batch_size=1, shuffle=True)
+
+    sample_idx = torch.randint(len(training_data), size=(1,)).item()
+    for batch, (X, y) in enumerate(train_dataloader):
+        print(f'Batch is {batch}')
+        print(X.type(),X.size())
+
+
+    # X = torch.randn(1,3,256,256)
+    # y = torch.randn(1,2)
+    # img = read_image('dataset/train_set/dog.0.jpg')
+    # X[0,:0,:,:] = img[0,:,:]
+    # X[0,:1,:,:] = img[1,:,:]
+    # X[0,:2,:,:] = img[2,:,:]
+    print(X.type(),X.size())
+    preds = model.forward(X)
+    loss = loss_fn(preds,y)
