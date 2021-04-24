@@ -9,8 +9,8 @@ import os
 url = 'https://www.kaggle.com/tongpython/cat-and-dog'
 
 # Parameters
-img_x = 256
-img_y = 256
+img_x = 128
+img_y = 128
 train_img_num = 140
 test_img_num = 60
 
@@ -52,7 +52,7 @@ val_path = file_name(val_dir)
 
 def preprocess_img(list):
     img = cv2.imread(list)
-    img = cv2.resize(img, (256, 256))
+    img = cv2.resize(img, (img_x, img_y))
     # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     return img
 

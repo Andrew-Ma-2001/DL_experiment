@@ -11,15 +11,14 @@ def train_loop(dataloader, model, loss_fn, optimizer,use_gpu=False):
     for batch, (X, y) in enumerate(dataloader):
         # Compute prediction and loss
         X = X.type(torch.FloatTensor)
-        print(X.type())
         y = y.type(torch.LongTensor)
         y = torch.squeeze(y)
         if use_gpu == False:
             pred = model(X)
-            loss = loss_fn(input=pred, target=y)
+            loss = loss_fn(pred, y)
         else:
-            X.to(device)
-            y.to(device)
+            X = X.to(device)
+            y = y.to(device)
             model.to(device)
             pred = model(X)
             loss = loss_fn(pred, y)
@@ -28,9 +27,9 @@ def train_loop(dataloader, model, loss_fn, optimizer,use_gpu=False):
         loss.backward()
         optimizer.step()
 
-        if batch % 100 == 0:
-            loss, current = loss.item(), batch * len(X)
-            print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+
+        loss, current = loss.item(), (batch+1) * len(X)
+        print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
 
 
 def test_loop(dataloader, model, loss_fn, use_gpu=False):
@@ -40,9 +39,12 @@ def test_loop(dataloader, model, loss_fn, use_gpu=False):
 
     with torch.no_grad():
         for X, y in dataloader:
+            X = X.type(torch.FloatTensor)
+            y = y.type(torch.LongTensor)
+            y = torch.squeeze(y)
             if use_gpu == True:
-                X.to(device)
-                y.to(device)
+                X = X.to(device)
+                y = y.to(device)
                 model.to(device)
             pred = model(X)
             test_loss += loss_fn(pred, y).item()
@@ -56,9 +58,9 @@ def test_loop(dataloader, model, loss_fn, use_gpu=False):
 
 
 if __name__ == '__main__':
-    learning_rate = 1e-3
+    learning_rate = 1e-4
     batch_size = 10
-    epochs = 1
+    epochs = 50
 
     model = DogCat_Net()
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -67,16 +69,16 @@ if __name__ == '__main__':
     training_data = Dogcat_Dataset(train_dir='dataset/train_set', test_dir='dataset/test_set')
     test_data = Dogcat_Dataset(train_dir='dataset/train_set', test_dir='dataset/test_set', train=False)
 
-    train_dataloader = DataLoader(training_data, batch_size=10, shuffle=True)
-    test_dataloader = DataLoader(test_data, batch_size=10, shuffle=True)
+    train_dataloader = DataLoader(training_data, batch_size=batch_size, shuffle=True)
+    test_dataloader = DataLoader(test_data, batch_size=batch_size, shuffle=True)
 
 
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
-
+    torch.cuda.empty_cache()
 
     for t in range(epochs):
         print(f"Epoch {t+1}\n-------------------------------")
-        train_loop(train_dataloader, model, loss_fn, optimizer)
-        test_loop(test_dataloader, model, loss_fn)
+        train_loop(train_dataloader, model, loss_fn, optimizer,use_gpu=True)
+        test_loop(test_dataloader, model, loss_fn,use_gpu=True)
     print("Done!")

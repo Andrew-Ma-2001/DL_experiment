@@ -25,7 +25,7 @@ class DogCat_Net(nn.Module):
         self.cov2 = nn.Conv2d(self.out_channels, self.out_channels, kernel_size=(3,3),padding=1)
         self.l2 = nn.ReLU()
         self.max1 = nn.MaxPool2d(kernel_size=(2,2), stride=2, padding=0)
-        self.l3 = nn.Linear(128*128*8, 1000)
+        self.l3 = nn.Linear(64*64*8, 1000)
         self.l4 = nn.ReLU()
         self.l5 = nn.Linear(1000, 1000)
         self.l6 = nn.ReLU()
@@ -80,7 +80,7 @@ if __name__ == '__main__':
 
     # train_features, train_labels = next(iter(train_dataloader))
     # train_features, train_labels = Variable(train_features), Variable(train_labels)
-    X = torch.zeros(1,3,256,256)
+    X = torch.zeros(1,3,128,128)
     y = torch.zeros(1,2)
 
     for img, label in training_data:
