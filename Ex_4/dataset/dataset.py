@@ -1,11 +1,17 @@
 import torch
+import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
-from torchvision.io import read_image
+# from torchvision.io import read_image
+from PIL import Image
 import os
 import matplotlib.pyplot as plt
 import numpy as np
 
+loader = transforms.Compose([transforms.ToTensor()])
+def PIL_to_tensor(image):
+    image = loader(image).unsqueeze(0)
+    return image.to('cpu', torch.float)
 
 def file_name(file_dir):
     list = []
@@ -26,13 +32,17 @@ class Dogcat_Dataset(Dataset):
     def __getitem__(self, item):
         if self.train == True:
             path = file_name(self.train_dir)[item]
-            image = read_image(path)
+            image = Image.open(path)
+            image = PIL_to_tensor(image)
+            image = torch.squeeze(image)
             label = self.find_label(path)
 
             return image,label
         else:
             path = file_name(self.test_dir)[item]
-            image = read_image(path)
+            image = Image.open(path)
+            image = PIL_to_tensor(image)
+            image = torch.squeeze(image)
             label = self.find_label(path)
             sample = [image, label]
             return sample
@@ -70,6 +80,7 @@ if __name__ == '__main__':
     # numpy image: H x W x C
     # torch image: C x H x W
     # np.transpose( xxx,  (2, 0, 1))   # 将 H x W x C 转化为 C x H x W
+    # img = torch.squeeze(img)
     img = np.transpose((img.numpy()), (1, 2, 0))
     plt.imshow(img)
     plt.title(label)

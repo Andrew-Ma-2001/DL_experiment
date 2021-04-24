@@ -77,7 +77,7 @@ def train_loop(train_dataloader,model, loss_fn, optimizer,use_gpu=False):
 if __name__ == '__main__':
     learning_rate = 1e-4
     batch_size = 10
-    epochs = 50
+    epochs = 10
     best_acc = 0
     model = DogCat_Net()
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
