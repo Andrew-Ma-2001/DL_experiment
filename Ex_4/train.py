@@ -13,9 +13,10 @@ def train_loop(dataloader, model, loss_fn, optimizer,use_gpu=False):
         X = X.type(torch.FloatTensor)
         print(X.type())
         y = y.type(torch.LongTensor)
+        y = torch.squeeze(y)
         if use_gpu == False:
             pred = model(X)
-            loss = loss_fn(pred, y)
+            loss = loss_fn(input=pred, target=y)
         else:
             X.to(device)
             y.to(device)
@@ -62,8 +63,6 @@ if __name__ == '__main__':
     model = DogCat_Net()
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
     training_data = Dogcat_Dataset(train_dir='dataset/train_set', test_dir='dataset/test_set')
     test_data = Dogcat_Dataset(train_dir='dataset/train_set', test_dir='dataset/test_set', train=False)
