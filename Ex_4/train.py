@@ -8,8 +8,11 @@ from torch.utils.data import DataLoader
 def train_loop(dataloader, model, loss_fn, optimizer,use_gpu=False):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     size = len(dataloader.dataset)
-    for batch, X, y in enumerate(dataloader):
+    for batch, (X, y) in enumerate(dataloader):
         # Compute prediction and loss
+        X = X.type(torch.FloatTensor)
+        print(X.type())
+        y = y.type(torch.LongTensor)
         if use_gpu == False:
             pred = model(X)
             loss = loss_fn(pred, y)
@@ -51,31 +54,30 @@ def test_loop(dataloader, model, loss_fn, use_gpu=False):
 
 
 
+if __name__ == '__main__':
+    learning_rate = 1e-3
+    batch_size = 10
+    epochs = 1
 
-learning_rate = 1e-3
-batch_size = 10
-epochs = 5
+    model = DogCat_Net()
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-model = DogCat_Net()
+    loss_fn = nn.CrossEntropyLoss()
+    optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
-loss_fn = nn.CrossEntropyLoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+    training_data = Dogcat_Dataset(train_dir='dataset/train_set', test_dir='dataset/test_set')
+    test_data = Dogcat_Dataset(train_dir='dataset/train_set', test_dir='dataset/test_set', train=False)
 
-training_data = Dogcat_Dataset(train_dir='dataset/train_set', test_dir='dataset/test_set')
-test_data = Dogcat_Dataset(train_dir='dataset/train_set', test_dir='dataset/test_set', train=False)
-
-train_dataloader = DataLoader(training_data, batch_size=10, shuffle=True)
-test_dataloader = DataLoader(test_data, batch_size=10, shuffle=True)
-
-for batch, (X, y) in enumerate(train_dataloader):
-    print(X.size(),y.size())
-    print(X.type(),y.type())
-loss_fn = nn.CrossEntropyLoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+    train_dataloader = DataLoader(training_data, batch_size=10, shuffle=True)
+    test_dataloader = DataLoader(test_data, batch_size=10, shuffle=True)
 
 
-for t in range(epochs):
-    print(f"Epoch {t+1}\n-------------------------------")
-    train_loop(train_dataloader, model, loss_fn, optimizer)
-    test_loop(test_dataloader, model, loss_fn)
-print("Done!")
+    loss_fn = nn.CrossEntropyLoss()
+    optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+
+
+    for t in range(epochs):
+        print(f"Epoch {t+1}\n-------------------------------")
+        train_loop(train_dataloader, model, loss_fn, optimizer)
+        test_loop(test_dataloader, model, loss_fn)
+    print("Done!")

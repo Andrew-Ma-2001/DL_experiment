@@ -47,9 +47,9 @@ class Dogcat_Dataset(Dataset):
     # Here we consider cat as 0 dog as 1
     def find_label(self, name):
         if name.count('dog') != 0:
-            return torch.tensor([1,0])
+            return torch.tensor([1])
         if name.count('cat') != 0:
-            return torch.tensor([0,1])
+            return torch.tensor([0])
 
 
 

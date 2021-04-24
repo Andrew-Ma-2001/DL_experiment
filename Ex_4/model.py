@@ -8,6 +8,7 @@ from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
 from Ex_4.dataset.dataset import Dogcat_Dataset
 from torchvision.io import read_image
+from torch.autograd import Variable
 
 
 
@@ -68,21 +69,23 @@ if __name__ == '__main__':
     training_data = Dogcat_Dataset(train_dir='dataset/train_set', test_dir='dataset/test_set')
     test_data = Dogcat_Dataset(train_dir='dataset/train_set', test_dir='dataset/test_set', train=False)
 
-    train_dataloader = DataLoader(training_data, batch_size=1, shuffle=True)
-    test_dataloader = DataLoader(test_data, batch_size=1, shuffle=True)
+    # train_dataloader = DataLoader(training_data, batch_size=1, shuffle=True)
+    # test_dataloader = DataLoader(test_data, batch_size=1, shuffle=True)
 
     sample_idx = torch.randint(len(training_data), size=(1,)).item()
-    for batch, (X, y) in enumerate(train_dataloader):
-        print(f'Batch is {batch}')
-        print(X.type(),X.size())
+    # for batch, (X, y) in enumerate(train_dataloader):
+    #     print(f'Batch is {batch}')
+    #
+    #     print(X.type(),X.size())
 
+    # train_features, train_labels = next(iter(train_dataloader))
+    # train_features, train_labels = Variable(train_features), Variable(train_labels)
+    X = torch.zeros(1,3,256,256)
+    y = torch.zeros(1,2)
 
-    # X = torch.randn(1,3,256,256)
-    # y = torch.randn(1,2)
-    # img = read_image('dataset/train_set/dog.0.jpg')
-    # X[0,:0,:,:] = img[0,:,:]
-    # X[0,:1,:,:] = img[1,:,:]
-    # X[0,:2,:,:] = img[2,:,:]
-    print(X.type(),X.size())
+    for img, label in training_data:
+        X[0,:] = img[:]
+        y[0,:] = label[:]
+    # print(X.type(),X.size())
     preds = model.forward(X)
     loss = loss_fn(preds,y)
