@@ -9,9 +9,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 loader = transforms.Compose([transforms.ToTensor()])
+
+
 def PIL_to_tensor(image):
     image = loader(image).unsqueeze(0)
     return image.to('cpu', torch.float)
+
 
 def file_name(file_dir):
     list = []
@@ -21,13 +24,13 @@ def file_name(file_dir):
                 list.append(os.path.join(root, file))
     return list
 
+
 class Dogcat_Dataset(Dataset):
-    def __init__(self, train_dir, test_dir,transform=True, train=True):
+    def __init__(self, train_dir, test_dir, transform=True, train=True):
         self.transform = transform
         self.train_dir = train_dir
         self.test_dir = test_dir
         self.train = train
-
 
     def __getitem__(self, item):
         if self.train == True:
@@ -37,7 +40,7 @@ class Dogcat_Dataset(Dataset):
             image = torch.squeeze(image)
             label = self.find_label(path)
 
-            return image,label
+            return image, label
         else:
             path = file_name(self.test_dir)[item]
             image = Image.open(path)
@@ -47,12 +50,11 @@ class Dogcat_Dataset(Dataset):
             sample = [image, label]
             return sample
 
-
     def __len__(self):
         if self.train:
-            return(len(file_name(self.train_dir)))
+            return (len(file_name(self.train_dir)))
         else:
-            return(len(file_name(self.test_dir)))
+            return (len(file_name(self.test_dir)))
 
     # Here we consider cat as 0 dog as 1
     def find_label(self, name):
@@ -62,13 +64,11 @@ class Dogcat_Dataset(Dataset):
             return torch.tensor([0])
 
 
-
 if __name__ == '__main__':
-    labels_map = { 0: 'cat', 1: 'dog',}
+    labels_map = {0: 'cat', 1: 'dog', }
 
     training_data = Dogcat_Dataset(train_dir='train_set', test_dir='test_set')
     test_data = Dogcat_Dataset(train_dir='train_set', test_dir='test_set', train=False)
-
 
     train_dataloader = DataLoader(training_data, batch_size=10, shuffle=True)
     test_dataloader = DataLoader(test_data, batch_size=10, shuffle=True)
@@ -88,9 +88,3 @@ if __name__ == '__main__':
 
     train_features, train_labels = next(iter(train_dataloader))
     print(train_features.type())
-
-
-
-
-
-
