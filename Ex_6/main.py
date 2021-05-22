@@ -9,7 +9,7 @@ import torchvision.transforms as transforms
 
 import os
 import argparse
-from Ex_6.models.model import *
+from models.model import *
 
 from utils import progress_bar
 
@@ -44,19 +44,19 @@ transform = transforms.Compose([transforms.ToTensor(),
 train_set = torchvision.datasets.CIFAR10(root='./data',
                                train=True,
                                download=True,
-                               transform=transform)
+                               transform=transform_train)
 
 train_loader = torch.utils.data.DataLoader(train_set,
-                                      batch_size=16,
+                                      batch_size=50,
                                       shuffle=True)
 
 test_set = torchvision.datasets.CIFAR10(root='./data',
                               train=False,
                               download=True,
-                              transform=transform)
+                              transform=transform_test)
 
 test_loader = torch.utils.data.DataLoader(test_set,
-                                     batch_size=16,
+                                     batch_size=50,
                                      shuffle=True)
 
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
@@ -144,7 +144,7 @@ def test(epoch):
         best_acc = acc
 
 
-for epoch in range(start_epoch, start_epoch + 200):
+for epoch in range(start_epoch, start_epoch + 10):
     train(epoch)
     test(epoch)
     scheduler.step()
