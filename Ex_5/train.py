@@ -4,11 +4,13 @@ import torch.nn as nn
 import torch.utils.data as Data
 from Ex_5.model import LeNet
 
+url = 'https://zhuanlan.zhihu.com/p/355527103'
 model = LeNet()
 Epoch = 5
 batch_size = 64
 lr = 0.001
-train_data = torchvision.datasets.MNIST(root='./data/', train=True, transform=torchvision.transforms.ToTensor(), download=False)
+train_data = torchvision.datasets.MNIST(root='./data/', train=True, transform=torchvision.transforms.ToTensor(),
+                                        download=False)
 train_loader = Data.DataLoader(train_data, batch_size=batch_size, shuffle=True, num_workers=0, drop_last=True)
 loss_function = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
