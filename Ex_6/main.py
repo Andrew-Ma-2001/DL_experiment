@@ -66,6 +66,7 @@ print('==> Building model..')
 
 net = ResNet18()
 net = net.to(device)
+
 if device == 'cuda':
     net = torch.nn.DataParallel(net)
     cudnn.benchmark = True
